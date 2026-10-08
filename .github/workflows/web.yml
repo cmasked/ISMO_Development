@@ -74,7 +74,7 @@ jobs:
         working-directory: web
         run: npm run typecheck
       - name: Build web
-        timeout-minutes: 2
+        timeout-minutes: 8
         working-directory: web
         run: npm run build
       - name: Install browser
