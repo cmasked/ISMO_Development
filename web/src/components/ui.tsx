@@ -1,5 +1,5 @@
 import { Children, cloneElement, isValidElement, useEffect, useId, useRef, type ReactNode } from 'react';
-import { AlertCircle, ArrowRight, Plus, X } from 'lucide-react';
+import { AlertCircle, ArrowRight, Plus, X } from './icons';
 import { labels } from '../types';
 import { errorMessage } from '../lib/api';
 export function Geometry({ className = '' }: { className?: string }) {

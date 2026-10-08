@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { CheckCircle2, X } from 'lucide-react';
+import { CheckCircle2, X } from './icons';
 const ToastContext = createContext<(message: string) => void>(() => undefined);
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [message, setMessage] = useState('');

@@ -1,4 +1,4 @@
-import { CheckSquare, Folder, LayoutGrid, LogOut, Menu, X } from 'lucide-react';
+import { CheckSquare, Folder, LayoutGrid, LogOut, Menu, X } from './icons';
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Check, Pencil, Trash2 } from 'lucide-react';
+import { Check, Pencil, Trash2 } from '../components/icons';
 import { Link } from 'react-router-dom';
 import type { Project, Task, TaskStatus } from '../types';
 import { labels, taskStatuses } from '../types';

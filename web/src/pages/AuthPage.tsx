@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { ArrowRight, Eye, EyeOff } from '../components/icons';
 import { useAuth } from '../auth/AuthProvider';
 import { api } from '../lib/api';
 import { Field, Geometry, InlineError } from '../components/ui';

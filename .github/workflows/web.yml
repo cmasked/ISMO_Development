@@ -38,6 +38,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            web/package-lock.json
       - name: Generate ephemeral test signing key
         run: node -e "const key = require('crypto').randomBytes(48).toString('hex'); console.log('::add-mask::' + key); require('fs').appendFileSync(process.env.GITHUB_ENV, 'JWT_SECRET=' + key + '\n')"
       - name: Install backend
@@ -79,6 +83,10 @@ jobs:
       - name: Verify real user flows
         working-directory: web
         run: npm test
+      - name: Capture review images
+        if: always()
+        working-directory: web
+        run: node -e "const fs = require('fs'); for (const name of ['dashboard-light', 'project-detail-dark', 'tasks-dark-390']) { const path = 'test-results/screenshots/' + name + '.png'; if (fs.existsSync(path)) console.log('WEB_SCREENSHOT_' + name + '=' + fs.readFileSync(path).toString('base64')); }"
       - name: Save browser report and screenshots
         if: always()
         uses: actions/upload-artifact@v4

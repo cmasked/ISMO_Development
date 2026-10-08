@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from '../components/icons';
 import { api, errorMessage } from '../lib/api';
 import { formatDate, useTasks } from '../lib/queries';
 import { Badge, CreateButton, ErrorState, Loading, ProgressRing } from '../components/ui';

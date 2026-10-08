@@ -1,0 +1,19 @@
+// Import only the icon modules used by the product.
+export { default as AlertCircle } from 'lucide-react/dist/esm/icons/circle-alert.js';
+export { default as ArrowRight } from 'lucide-react/dist/esm/icons/arrow-right.js';
+export { default as Plus } from 'lucide-react/dist/esm/icons/plus.js';
+export { default as X } from 'lucide-react/dist/esm/icons/x.js';
+export { default as Moon } from 'lucide-react/dist/esm/icons/moon.js';
+export { default as Sun } from 'lucide-react/dist/esm/icons/sun.js';
+export { default as CheckSquare } from 'lucide-react/dist/esm/icons/square-check-big.js';
+export { default as Folder } from 'lucide-react/dist/esm/icons/folder.js';
+export { default as LayoutGrid } from 'lucide-react/dist/esm/icons/layout-grid.js';
+export { default as LogOut } from 'lucide-react/dist/esm/icons/log-out.js';
+export { default as Menu } from 'lucide-react/dist/esm/icons/menu.js';
+export { default as Eye } from 'lucide-react/dist/esm/icons/eye.js';
+export { default as EyeOff } from 'lucide-react/dist/esm/icons/eye-off.js';
+export { default as CheckCircle2 } from 'lucide-react/dist/esm/icons/circle-check.js';
+export { default as Pencil } from 'lucide-react/dist/esm/icons/pencil.js';
+export { default as Trash2 } from 'lucide-react/dist/esm/icons/trash-2.js';
+export { default as CalendarDays } from 'lucide-react/dist/esm/icons/calendar-days.js';
+export { default as Check } from 'lucide-react/dist/esm/icons/check.js';

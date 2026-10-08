@@ -209,3 +209,25 @@ test('keyboard dialogs, project movement, cascade deletion and scheduled session
   await expect(page).toHaveURL(/\/login$/);
   await expect(page.getByText('Your session has expired. Please sign in to continue.')).toBeVisible();
 });
+
+test('sessions synchronize across tabs and expired saved sessions explain the redirect', async ({ page, context, request }) => {
+  const value = await register(request);
+  await signIn(page, value);
+  const second = await context.newPage();
+  await second.goto('/tasks');
+  await expect(second.getByRole('heading', { name: 'Tasks', exact: false }).first()).toBeVisible();
+  await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await expect(page).toHaveURL(/\/login$/);
+  await expect(second).toHaveURL(/\/login$/);
+  await signIn(second, value);
+  await expect(page.getByTestId('metric-totalProjects')).toBeVisible();
+  await second.evaluate(() => {
+    const saved = JSON.parse(localStorage.getItem('ismo.session')!);
+    saved.expiresAt = new Date(Date.now() - 1000).toISOString();
+    localStorage.setItem('ismo.session', JSON.stringify(saved));
+  });
+  await second.goto('/tasks');
+  await expect(second).toHaveURL(/\/login$/);
+  await expect(second.getByText('Your session has expired. Please sign in to continue.')).toBeVisible();
+  await expect(page).toHaveURL(/\/login$/);
+});

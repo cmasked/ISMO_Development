@@ -8,7 +8,7 @@ Use Node.js 22 or 24. Start the database and backend using the root README, incl
 
     cd web
     cp .env.example .env
-    npm install
+    npm ci
     npm run dev
 
 Open http://localhost:3000. Vite forwards /api requests to http://127.0.0.1:3001 by default. Set WEB_PROXY_TARGET when the backend uses another address or port. Local settings stay in ignored .env files. The proxy preserves the single backend and is development tooling, not an additional backend.

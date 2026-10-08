@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarDays, Pencil, Trash2 } from 'lucide-react';
+import { ArrowRight, CalendarDays, Pencil, Trash2 } from '../components/icons';
 import { Link } from 'react-router-dom';
 import type { Project, Task } from '../types';
 import { formatDate } from '../lib/queries';
