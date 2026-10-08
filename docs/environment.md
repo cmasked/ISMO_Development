@@ -13,10 +13,10 @@ Create `backend/.env` from `backend/.env.example`. Existing process environment 
 | `DATABASE_NAME` | Yes | Database name; no default |
 | `DATABASE_SSL` | No | Exactly `true` or `false`; default `false` for local PostgreSQL. When enabled, certificate verification remains on |
 | `CORS_ORIGINS` | No | Comma-separated exact HTTP/HTTPS web origins. Empty means no cross-origin browser access. No wildcard, credentials, paths or trailing slash |
-| `JWT_SECRET` | No, Stage 1 only | Reserved for later authentication. If supplied, at least 32 non-padding characters; no fallback secret |
-| `JWT_ACCESS_TOKEN_TTL_SECONDS` | No | Reserved token lifetime, integer 1–86400; default `3600` |
+| `JWT_SECRET` | Yes | Strong random HS256 signing secret with at least 32 non-padding characters; no fallback secret |
+| `JWT_ACCESS_TOKEN_TTL_SECONDS` | No | Token/session lifetime, integer 1–86400; default `3600` |
 
-JWT configuration does not activate authentication at this stage. The authentication stage must require a valid signing secret before introducing protected APIs.
+JWT configuration is required at startup. Generate a strong random secret locally (for example, 48 random bytes encoded as hex) and store it securely. Use the same value across restarts; changing it invalidates existing tokens. Never commit or paste secret values into logs/chat.
 
 Use the same database variables when invoking Docker Compose with `--env-file backend/.env`. Compose injects them into PostgreSQL and overrides the backend container's database host/port with its service address.
 

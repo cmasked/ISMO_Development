@@ -9,7 +9,9 @@ import { buildDatabaseOptions } from './database.options';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        ...buildDatabaseOptions(config.getOrThrow<AppConfiguration['database']>('database')),
+        ...buildDatabaseOptions(
+          config.getOrThrow<AppConfiguration['database']>('database'),
+        ),
         retryAttempts: 1,
         // The driver error can contain connection details. Startup reports a safe failure.
         toRetry: () => false,

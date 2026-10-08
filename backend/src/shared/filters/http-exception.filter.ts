@@ -1,4 +1,10 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  Logger,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { ErrorCodes } from '../constants/error-codes';
 import { ApiResponse } from '../interfaces/api-response.interface';
@@ -19,15 +25,29 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const response = host.switchToHttp().getResponse<Response>();
-    const status = exception instanceof HttpException ? exception.getStatus() : 500;
-    const code = STATUS_CODES[status] ?? (status >= 500 ? ErrorCodes.INTERNAL_ERROR : ErrorCodes.HTTP_ERROR);
+    const status =
+      exception instanceof HttpException ? exception.getStatus() : 500;
+    let code =
+      STATUS_CODES[status] ??
+      (status >= 500 ? ErrorCodes.INTERNAL_ERROR : ErrorCodes.HTTP_ERROR);
     let message = status >= 500 ? 'Internal server error' : 'Request failed';
 
     if (exception instanceof HttpException && status < 500) {
       const body = exception.getResponse();
-      const detail: unknown = typeof body === 'string' ? body : (body as Record<string, unknown>).message;
+      if (typeof body === 'object' && body !== null && 'code' in body) {
+        const suppliedCode = (body as Record<string, unknown>).code;
+        if (Object.values(ErrorCodes).includes(suppliedCode as ErrorCodes))
+          code = suppliedCode as ErrorCodes;
+      }
+      const detail: unknown =
+        typeof body === 'string'
+          ? body
+          : (body as Record<string, unknown>).message;
       if (typeof detail === 'string') message = detail;
-      if (Array.isArray(detail) && detail.every((item) => typeof item === 'string')) {
+      if (
+        Array.isArray(detail) &&
+        detail.every((item) => typeof item === 'string')
+      ) {
         message = detail.join('; ');
       }
     }
@@ -36,9 +56,15 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     if (status === 503) message = 'Service unavailable';
 
     // Never log exception messages, stacks, bodies, URLs, headers, or driver parameters.
-    if (status >= 500) this.logger.error(`Request failed: status=${status}, code=${code}`);
+    if (status >= 500)
+      this.logger.error(`Request failed: status=${status}, code=${code}`);
 
-    const body: ApiResponse<null> = { success: false, data: null, message, code };
+    const body: ApiResponse<null> = {
+      success: false,
+      data: null,
+      message,
+      code,
+    };
     response.status(status).json(body);
   }
 }

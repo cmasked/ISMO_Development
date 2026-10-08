@@ -13,7 +13,7 @@ export interface AppConfiguration {
     ssl: boolean;
   };
   jwt: {
-    secret?: string;
+    secret: string;
     accessTokenTtlSeconds: number;
   };
 }

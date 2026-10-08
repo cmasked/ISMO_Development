@@ -1,5 +1,7 @@
 # Stage 1 verification
 
+This is the historical foundation baseline. See [Milestone 1 verification](milestone-1-verification.md) for the current backend/database status; JWT configuration is now required and application migrations/entities are implemented.
+
 Validated in the cloud workspace on 2026-10-08 using Node.js 24.19.0, npm 11.9.0 and PostgreSQL 16. All checks below concern foundation behavior; no feature schema or feature endpoints were implemented.
 
 | Command/check | Result |
