@@ -117,6 +117,7 @@ test('complete real-backend workflow, editing, filtering, deletion, themes and a
   expect(darkAxe.violations).toEqual([]);
   for (const width of [1024, 768, 390]) {
     await page.setViewportSize({ width, height: 900 });
+    if (width === 390) await expect(page.locator('.sidebar')).not.toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await screenshot(page, 'tasks-dark-' + width);
   }
