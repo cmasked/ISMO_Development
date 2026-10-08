@@ -116,10 +116,12 @@ jobs:
           script: |
             adb reverse tcp:8081 tcp:8081
             adb install mobile/android/app/build/outputs/apk/debug/app-debug.apk
+            adb shell pm disable-user --user 0 com.google.android.apps.nexuslauncher
             maestro test --env TEST_EMAIL=android-ui-${{ github.run_id }}@example.test --test-output-dir mobile/native-results --debug-output mobile/native-results mobile/.maestro/core-flow.yaml
             TEST_EMAIL=android-ui-${{ github.run_id }}@example.test node mobile/scripts/cross-platform.cjs after-native
             maestro test --test-output-dir mobile/native-results --debug-output mobile/native-results mobile/.maestro/sync-flow.yaml
             TEST_EMAIL=android-ui-${{ github.run_id }}@example.test node mobile/scripts/cross-platform.cjs after-sync
+            maestro test --test-output-dir mobile/native-results --debug-output mobile/native-results mobile/.maestro/web-status-flow.yaml
             maestro test --test-output-dir mobile/native-results --debug-output mobile/native-results mobile/.maestro/logout-flow.yaml
       - name: Capture native review images
         if: always()

@@ -148,6 +148,11 @@ test('complete real-backend workflow, editing, filtering, deletion, themes and a
   await expect(page).toHaveURL(/\/projects$/);
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
   await expect(page).toHaveURL(/\/login$/);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/login$/);
+  await expect(page.getByRole('heading', { name: 'Welcome back', exact: true })).toBeVisible();
+  await page.reload();
+  await expect(page).toHaveURL(/\/login$/);
   await page.goto('/tasks');
   await expect(page).toHaveURL(/\/login$/);
   expect(runtimeErrors).toEqual([]);

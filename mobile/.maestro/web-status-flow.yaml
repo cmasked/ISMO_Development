@@ -1,0 +1,27 @@
+appId: com.ismo.projects.e2e
+---
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Total projects"
+    timeout: 30000
+- tapOn:
+    id: "tab-tasks"
+- swipe:
+    start: "50%,25%"
+    end: "50%,80%"
+    duration: 800
+- tapOn:
+    id: "search-tasks"
+- inputText: "Completed from Android"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      text: "Completed from Android"
+    direction: DOWN
+- scrollUntilVisible:
+    element:
+      text: "Status: In progress"
+    direction: DOWN
+- assertVisible: "Status: In progress"
+- takeScreenshot: "web-status-on-android"

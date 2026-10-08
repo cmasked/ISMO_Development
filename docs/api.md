@@ -16,7 +16,7 @@ Successful controller responses use `{ success: true, data, message: "Success", 
 | 503 | `SERVICE_UNAVAILABLE` |
 | 500 | `INTERNAL_ERROR`; sensitive details are hidden |
 
-Use `Authorization: Bearer <accessToken>` on protected requests. Login returns the token and `expiresAt`; retain it until logout/expiration. On HTTP 401, clear the local session and return to login. Native mobile must use secure device storage in its milestone. Refresh tokens are not part of the required implementation.
+Use `Authorization: Bearer <accessToken>` on protected requests. Login returns the token and `expiresAt`; retain it until logout/expiration. On HTTP 401, clear the local session and return to login. Android persists authentication in encrypted Expo SecureStore. Refresh tokens are not part of the required implementation.
 
 ## Required endpoints
 

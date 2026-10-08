@@ -25,6 +25,9 @@ const fs = require('fs');
       await expect(page.locator('.task-main>strong').filter({ hasText: 'Created on web' })).toBeVisible();
     } else {
       await expect(page.getByLabel('Status for Completed from Android')).toHaveValue('COMPLETED');
+      await page.getByLabel('Status for Completed from Android').selectOption('IN_PROGRESS');
+      await expect(page.getByLabel('Status for Completed from Android')).toHaveValue('IN_PROGRESS');
+      await expect(page.getByText('1 of 2 tasks completed', { exact: true })).toBeVisible();
     }
     fs.mkdirSync('mobile/native-results', { recursive: true });
     await page.screenshot({ path: 'mobile/native-results/web-' + process.argv[2] + '.png', fullPage: true });

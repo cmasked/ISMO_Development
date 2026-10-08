@@ -1,0 +1,109 @@
+name: Final release review
+on:
+  pull_request:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: review_test
+          POSTGRES_PASSWORD: ephemeral_ci_password
+          POSTGRES_DB: workframe_review
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U review_test -d workframe_review"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_HOST: 127.0.0.1
+      DATABASE_PORT: '5432'
+      DATABASE_USER: review_test
+      DATABASE_PASSWORD: ephemeral_ci_password
+      DATABASE_NAME: workframe_review
+      DATABASE_SSL: 'false'
+      CORS_ORIGINS: http://127.0.0.1:3000
+      JWT_ACCESS_TOKEN_TTL_SECONDS: '3600'
+      PORT: '3001'
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate test signing key
+        run: |
+          node -e "const s=require('crypto').randomBytes(48).toString('hex'); console.log('::add-mask::'+s); require('fs').appendFileSync(process.env.GITHUB_ENV,'JWT_SECRET='+s+'\\n');"
+      - name: Backend checks
+        working-directory: backend
+        run: |
+          npm ci
+          npm run typecheck
+          npm test
+          npm run test:integration
+      - name: Dependency evidence
+        if: always()
+        run: |
+          mkdir -p review-results
+          cd backend
+          npm audit --json > ../review-results/backend-audit.json || true
+          npm audit --omit=dev --json > ../review-results/backend-production-audit.json || true
+          node -e "for(const f of ['backend-audit.json','backend-production-audit.json']) {const a=require('../review-results/'+f); console.log(f+'='+JSON.stringify({metadata:a.metadata,vulnerabilities:a.vulnerabilities}));}"
+      - name: Production container and startup migrations
+        run: |
+          docker build -t workframe-api-review backend
+          docker run -d --name workframe-review --network host -e NODE_ENV=production -e PORT=3002 -e DATABASE_HOST -e DATABASE_PORT -e DATABASE_USER -e DATABASE_PASSWORD -e DATABASE_NAME -e DATABASE_SSL -e CORS_ORIGINS -e JWT_SECRET -e JWT_ACCESS_TOKEN_TTL_SECONDS workframe-api-review
+          node mobile/scripts/wait-for-url.cjs http://127.0.0.1:3002/api/health
+          node -e "const {Client}=require('./backend/node_modules/pg'); (async()=>{const c=new Client({host:process.env.DATABASE_HOST,port:Number(process.env.DATABASE_PORT),user:process.env.DATABASE_USER,password:process.env.DATABASE_PASSWORD,database:process.env.DATABASE_NAME});await c.connect();const r=await c.query(\"SELECT to_regclass('public.users') AS users\");if(!r.rows[0].users)throw Error('Startup migration did not create users');console.log('CONTAINER_STARTUP_MIGRATIONS=passed');await c.end();})().catch(()=>process.exit(1));"
+      - name: Scan tracked files for credential indicators
+        run: node scripts/secret-review.cjs
+      - name: Capture container log
+        if: always()
+        run: |
+          mkdir -p review-results
+          docker logs workframe-review > review-results/docker.log 2>&1 || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-release-review
+          path: review-results
+          retention-days: 7
+  live-web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      LIVE_WEB_URL: https://ismodevelopment-web.vercel.app
+      REVIEW_HEAD: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Wait for Android verification
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/wait-for-android.cjs
+      - name: Install live browser tools
+        working-directory: web
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          VITE_API_BASE_URL=https://ismo-development.onrender.com/api npm run build
+      - name: Inspect public deployed routes and interactions
+        working-directory: web
+        run: node scripts/live-review.cjs
+      - name: Capture live review images
+        if: always()
+        working-directory: web
+        run: |
+          node -e "const fs=require('fs');for(const name of ['login-light-1440','login-dark-390']){const p='live-results/'+name+'.png';if(fs.existsSync(p))console.log('LIVE_SCREENSHOT_'+name+'='+fs.readFileSync(p).toString('base64'));}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-website-review
+          path: web/live-results
+          retention-days: 7

@@ -28,7 +28,7 @@ Serve dist/ as static files. Configure the web host to send browser routes such 
 - Project status stays explicitly managed. Completion rings show completed tasks divided by total tasks from the real task list, and do not change project status.
 - Search is a debounced, literal name search through backend query parameters. Status/priority/project filters combine. Lists follow the backend creation order.
 - All deletion actions require confirmation; project deletion warns about the task cascade.
-- Queries refresh on navigation after mutations and browser focus. No polling, invented analytics, mock data, mobile app or extra backend is included.
+- Queries refresh on navigation after mutations and browser focus. No polling, invented analytics, mock data or extra backend is included. The Android client is documented in ../mobile/README.md.
 
 ## Verify
 

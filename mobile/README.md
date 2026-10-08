@@ -82,10 +82,10 @@ MOBILE_TEST_API_URL=http://127.0.0.1:3001/api npm run test:integration
 
 Never target production with the integration suite. It creates synthetic accounts and records and exercises deletion. CI supplies ephemeral PostgreSQL, a random masked signing key, native debug/release builds and a Maestro emulator flow. The test build points to the isolated backend; the installable APK uses the deployed backend. Native reports, screenshots and APKs are workflow artifacts.
 
-The native flow covers registration, login, project/task creation, editing, completion, combined filters, theme switching, authentication after relaunch and logout persistence. The browser/native cross-platform flow signs into the actual web app with the same account, verifies Android changes, creates a web task, verifies and edits it on Android, and checks the result on web. API integration tests separately cover counts, relationships, cascade deletion and invalid session clearing.
+The native flow covers registration, login, project/task creation, editing, completion, combined filters, theme switching, authentication after relaunch and logout persistence. The browser/native cross-platform flow signs into the actual web app with the same account, verifies Android changes, creates a web task, verifies and edits it on Android, and checks the result on web. Web then changes the task status and Android refresh verifies that update. API integration tests separately cover counts, relationships, cascade deletion and invalid session clearing.
 
 ## Structure
 
 `src/auth` owns authentication lifecycle; `src/lib` contains the typed API client, secure session controller, query hooks and validation; `src/components` contains themed native controls; `src/navigation` configures stacks/tabs; `src/features` contains reusable project/task views; `src/screens` contains the user flows.
 
-Backend and web source remain unchanged. Original assignment uploads were unavailable in the failed execution workspace; scope follows the pasted mobile checklist and inspected API contract.
+The API contract is preserved. Website branding uses Workframe; no separate backend is introduced. Original assignment uploads were unavailable in the failed execution workspace; scope follows the pasted mobile checklist and inspected API contract.
