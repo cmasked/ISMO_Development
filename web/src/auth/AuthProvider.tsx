@@ -12,14 +12,16 @@ interface Auth {
 const AuthContext = createContext<Auth | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const client = useQueryClient();
+  const [restored] = useState(readSession);
+  const expiredAtRestore = !!restored && Date.parse(restored.expiresAt) <= Date.now();
   const [session, setSession] = useState<Session | null>(() => {
-    const stored = readSession();
+    const stored = restored;
     if (stored && Date.parse(stored.expiresAt) <= Date.now()) { saveSession(null); return null; }
     return stored;
   });
   const [checking, setChecking] = useState(!!session);
   const [error, setError] = useState('');
-  const [notice, setNotice] = useState('');
+  const [notice, setNotice] = useState(expiredAtRestore ? 'Your session has expired. Please sign in to continue.' : '');
   const [attempt, setAttempt] = useState(0);
   const clear = useCallback((expired = false) => {
     saveSession(null); setSession(null); setChecking(false); setError('');
@@ -33,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const next = readSession();
       // Clear the in-memory fallback as well when another tab signs out.
       saveSession(next && Date.parse(next.expiresAt) > Date.now() && event.newValue ? next : null);
-      client.clear(); setSession(readSession()); setError(''); setChecking(!!readSession());
+      client.clear(); setSession(readSession()); setError(''); setChecking(!!readSession()); setAttempt(x => x + 1);
     };
     window.addEventListener('ismo:session-expired', expire);
     window.addEventListener('storage', storage);
