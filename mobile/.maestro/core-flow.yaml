@@ -1,0 +1,161 @@
+appId: com.ismo.projects.e2e
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 60000
+- tapOn: "Create an account"
+- tapOn:
+    id: "full-name"
+- inputText: "Android QA"
+- tapOn:
+    id: "email"
+- inputText: ${TEST_EMAIL}
+- tapOn:
+    id: "password"
+- inputText: "Test-password-42"
+- scrollUntilVisible:
+    element:
+      id: "confirm-password"
+    direction: DOWN
+- tapOn:
+    id: "confirm-password"
+- inputText: "Test-password-42"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "auth-submit"
+    direction: DOWN
+- tapOn:
+    id: "auth-submit"
+- extendedWaitUntil:
+    visible: "Your account is ready. Sign in to get started."
+    timeout: 30000
+- tapOn:
+    id: "password"
+- inputText: "Test-password-42"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "auth-submit"
+    direction: DOWN
+- tapOn:
+    id: "auth-submit"
+- extendedWaitUntil:
+    visible: "Total projects"
+    timeout: 30000
+- takeScreenshot: "dashboard-empty-light"
+- tapOn: "Create a project"
+- tapOn:
+    id: "project-name"
+- inputText: "Android launch"
+- hideKeyboard
+- tapOn:
+    id: "project-status"
+- tapOn:
+    id: "project-status-IN_PROGRESS"
+- scrollUntilVisible:
+    element:
+      id: "save-project"
+    direction: DOWN
+- tapOn:
+    id: "save-project"
+- extendedWaitUntil:
+    visible: "Android launch"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      text: "Create a task"
+    direction: DOWN
+- tapOn: "Create a task"
+- tapOn:
+    id: "task-name"
+- inputText: "Review Android launch"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "task-priority"
+    direction: DOWN
+- tapOn:
+    id: "task-priority"
+- tapOn:
+    id: "task-priority-HIGH"
+- scrollUntilVisible:
+    element:
+      id: "save-task"
+    direction: DOWN
+- tapOn:
+    id: "save-task"
+- extendedWaitUntil:
+    visible: "Review Android launch"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      text: "Edit task"
+    direction: DOWN
+- tapOn: "Edit task"
+- tapOn:
+    id: "task-name"
+- eraseText: 100
+- inputText: "Review launch content"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "save-task"
+    direction: DOWN
+- tapOn:
+    id: "save-task"
+- scrollUntilVisible:
+    element:
+      text: "Mark completed"
+    direction: DOWN
+- tapOn: "Mark completed"
+- extendedWaitUntil:
+    visible: "Mark pending"
+    timeout: 30000
+- takeScreenshot: "project-tasks-light"
+- tapOn:
+    id: "theme-toggle"
+- takeScreenshot: "project-tasks-dark"
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Total projects"
+    timeout: 30000
+- tapOn:
+    id: "tab-tasks"
+- tapOn:
+    id: "search-tasks"
+- inputText: "Review launch"
+- hideKeyboard
+- tapOn:
+    id: "filter-status"
+- tapOn:
+    id: "filter-status-COMPLETED"
+- tapOn:
+    id: "filter-priority"
+- tapOn:
+    id: "filter-priority-HIGH"
+- scrollUntilVisible:
+    element:
+      text: "Review launch content"
+    direction: DOWN
+- assertVisible: "Review launch content"
+- takeScreenshot: "tasks-dark"
+- tapOn:
+    id: "tab-account"
+- scrollUntilVisible:
+    element:
+      text: "Sign out"
+    direction: DOWN
+- tapOn: "Sign out"
+- tapOn: "(?i)sign out"
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 30000
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 30000

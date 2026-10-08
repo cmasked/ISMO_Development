@@ -4,9 +4,7 @@ export class ApiError extends Error {
 }
 export function message(error: unknown): string { return error instanceof Error ? error.message : 'Something went wrong. Please try again.'; }
 export function queryString(filters: Record<string, string | undefined>) {
-  const query = new URLSearchParams();
-  Object.entries(filters).forEach(([key, value]) => { if (value) query.set(key, value); });
-  const result = query.toString();
+  const result = Object.entries(filters).filter(([, value]) => !!value).map(([key, value]) => encodeURIComponent(key) + '=' + encodeURIComponent(value!)).join('&');
   return result ? '?' + result : '';
 }
 export function createApi(options: { baseUrl: string; session: () => Session | null; unauthorized: (token: string) => void; timeoutMs?: number }) {

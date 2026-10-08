@@ -14,7 +14,8 @@
     "test": "tsx --test tests/*.test.ts",
     "test:integration": "tsx --test tests/backend.integration.ts",
     "export": "expo export --platform android",
-    "prebuild:android": "expo prebuild --platform android --no-install"
+    "prebuild:android": "expo prebuild --platform android --no-install",
+    "postinstall": "node scripts/icon.cjs"
   },
   "dependencies": {
     "expo": "~54.0.0",

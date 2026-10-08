@@ -6,12 +6,12 @@ if ((!e2e && url.protocol !== 'https:') || (e2e && !['https:', 'http:'].includes
 }
 module.exports = {
   expo: {
-    name: 'ISMO', slug: 'ismo-projects', version: '1.0.0', orientation: 'default',
+    icon: './assets/icon.png', name: 'ISMO', slug: 'ismo-projects', version: '1.0.0', orientation: 'default',
     userInterfaceStyle: 'automatic', newArchEnabled: true,
     android: {
       package: e2e ? 'com.ismo.projects.e2e' : 'com.ismo.projects',
       versionCode: 1, softwareKeyboardLayoutMode: 'resize',
-      permissions: [], blockedPermissions: ['android.permission.RECORD_AUDIO', 'android.permission.READ_EXTERNAL_STORAGE', 'android.permission.WRITE_EXTERNAL_STORAGE', 'android.permission.SYSTEM_ALERT_WINDOW']
+      permissions: [], blockedPermissions: ['android.permission.USE_BIOMETRIC', 'android.permission.USE_FINGERPRINT', 'android.permission.VIBRATE', 'android.permission.RECORD_AUDIO', 'android.permission.READ_EXTERNAL_STORAGE', 'android.permission.WRITE_EXTERNAL_STORAGE', 'android.permission.SYSTEM_ALERT_WINDOW']
     },
     plugins: ['expo-secure-store', ['expo-build-properties', { android: { usesCleartextTraffic: e2e } }]],
     extra: { apiBaseUrl: apiUrl }
