@@ -12,7 +12,7 @@ function friendlyMessage(status: number, code: string, message: unknown): string
   if (status === 401) return 'Your session has expired. Please sign in again.';
   if (status === 404) return 'This item is no longer available. It may have been deleted.';
   if (status === 429) return 'Too many attempts. Please wait a minute and try again.';
-  if (status >= 500) return 'We couldn’t save or load your changes right now. Please try again.';
+  if (status >= 500) return 'We’re having trouble right now. Please try again.';
   if (code === 'VALIDATION_ERROR') {
     return typeof message === 'string' ? message.replace(/\bfullName\b/g, 'Full name')
       .replace(/\bstartDate\b/g, 'Start date').replace(/\bendDate\b/g, 'End date')

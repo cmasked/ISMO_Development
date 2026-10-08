@@ -31,7 +31,7 @@ export function Shell() {
     {open && <button className="sidebar-scrim" aria-label="Close navigation" onClick={() => setOpen(false)} />}
     <aside id="sidebar" className={'sidebar ' + (open ? 'is-open' : '')} aria-label="Workspace navigation">
       <NavLink to="/dashboard" className="brand"><Geometry /><span>ISMO <b>/</b> PM</span></NavLink>
-      <nav>{links.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to}><Icon size={20} /><span>{label}</span></NavLink>)}</nav>
+      <nav>{links.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} onClick={() => setOpen(false)}><Icon size={20} /><span>{label}</span></NavLink>)}</nav>
       <div className="account"><div className="account-person"><span className="avatar" aria-hidden="true">{user.fullName.split(/\s+/).map(x => x[0]).slice(0, 2).join('')}</span><div><strong title={user.fullName}>{user.fullName}</strong><small title={user.email}>{user.email}</small></div></div>
         <button className="button signout" onClick={() => void signOut()} disabled={busy}><LogOut size={17} />{busy ? 'Signing out…' : 'Sign out'}</button>{error && <p role="alert" className="logout-error">{error}</p>}</div>
     </aside>

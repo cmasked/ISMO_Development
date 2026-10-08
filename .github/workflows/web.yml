@@ -1,9 +1,10 @@
 name: Web frontend
 on:
-  push:
-    branches: [feat/web-frontend]
   pull_request:
     paths: ['web/**', '.github/workflows/web.yml']
+concurrency:
+  group: web-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -62,12 +63,18 @@ jobs:
       - name: Capture initial dependency lock
         working-directory: web
         run: node -e "console.log('WEB_LOCKFILE=' + JSON.stringify(require('./package-lock.json')))"
-      - name: Check web
+      - name: Lint web
+        timeout-minutes: 2
         working-directory: web
-        run: |
-          npm run lint
-          npm run typecheck
-          npm run build
+        run: npm run lint
+      - name: Typecheck web
+        timeout-minutes: 2
+        working-directory: web
+        run: npm run typecheck
+      - name: Build web
+        timeout-minutes: 2
+        working-directory: web
+        run: npm run build
       - name: Install browser
         working-directory: web
         run: npx playwright install --with-deps chromium
