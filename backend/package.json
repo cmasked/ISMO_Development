@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit --incremental false",
     "start": "nest start",
     "start:dev": "nest start --watch",
-    "start:prod": "node dist/main.js",
+    "start:prod": "npm run migration:run:prod && node dist/main.js",
     "test": "npm run build && node --test test/*.spec.js",
     "test:integration": "npm run build && node --test test/*.integration.js",
     "typeorm": "typeorm-ts-node-commonjs",

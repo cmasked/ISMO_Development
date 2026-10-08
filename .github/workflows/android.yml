@@ -84,7 +84,6 @@ jobs:
       - name: Start backend and verify shared API
         run: |
           cd backend
-          npm run migration:run:prod
           npm run start:prod > /tmp/ismo-api.log 2>&1 &
           cd ../mobile
           node scripts/wait-for-url.cjs http://127.0.0.1:3001/api/health
