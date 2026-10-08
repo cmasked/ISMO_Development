@@ -7,7 +7,7 @@ if ((!e2e && (url.protocol !== 'https:' || developmentHost)) || (e2e && !['https
 }
 module.exports = {
   expo: {
-    icon: './assets/icon.png', name: 'ISMO', slug: 'ismo-projects', version: '1.0.0', orientation: 'default',
+    icon: './assets/icon.png', name: 'Workframe', slug: 'ismo-projects', version: '1.0.0', orientation: 'default',
     userInterfaceStyle: 'automatic', newArchEnabled: true,
     android: {
       package: e2e ? 'com.ismo.projects.e2e' : 'com.ismo.projects',

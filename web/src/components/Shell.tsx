@@ -14,7 +14,7 @@ export function Shell() {
   const [error, setError] = useState('');
   useEffect(() => {
     setOpen(false); setError('');
-    document.title = (location.pathname.startsWith('/projects') ? 'Projects' : location.pathname.startsWith('/tasks') ? 'Tasks' : 'Dashboard') + ' — ISMO';
+    document.title = (location.pathname.startsWith('/projects') ? 'Projects' : location.pathname.startsWith('/tasks') ? 'Tasks' : 'Dashboard') + ' — Workframe';
   }, [location.pathname]);
   useEffect(() => {
     if (!open) return;
@@ -30,7 +30,7 @@ export function Shell() {
   return <div className="app-shell"><a className="skip-link" href="#main-content">Skip to content</a>
     {open && <button className="sidebar-scrim" aria-label="Close navigation" onClick={() => setOpen(false)} />}
     <aside id="sidebar" className={'sidebar ' + (open ? 'is-open' : '')} aria-label="Workspace navigation">
-      <NavLink to="/dashboard" className="brand"><Geometry /><span>ISMO <b>/</b> PM</span></NavLink>
+      <NavLink to="/dashboard" className="brand"><Geometry /><span>Workframe</span></NavLink>
       <nav>{links.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} onClick={() => setOpen(false)}><Icon size={20} /><span>{label}</span></NavLink>)}</nav>
       <div className="account"><div className="account-person"><span className="avatar" aria-hidden="true">{user.fullName.split(/\s+/).map(x => x[0]).slice(0, 2).join('')}</span><div><strong title={user.fullName}>{user.fullName}</strong><small title={user.email}>{user.email}</small></div></div>
         <button className="button signout" onClick={() => void signOut()} disabled={busy}><LogOut size={17} />{busy ? 'Signing out…' : 'Sign out'}</button>{error && <p role="alert" className="logout-error">{error}</p>}</div>

@@ -26,7 +26,15 @@ appId: com.ismo.projects.e2e
     direction: UP
 - tapOn: "Delete project"
 - tapOn: "(?i)keep project"
+- scrollUntilVisible:
+    element:
+      text: "Android launch"
+    direction: UP
 - assertVisible: "Android launch"
+- scrollUntilVisible:
+    element:
+      text: "Delete project"
+    direction: DOWN
 - tapOn: "Delete project"
 - tapOn: "(?i)delete project"
 - extendedWaitUntil:

@@ -18,7 +18,7 @@ import { AccountScreen } from '../screens/AccountScreen';
 const Stack = createNativeStackNavigator<RootStackParams>();
 const AuthStack = createNativeStackNavigator<AuthStackParams>();
 const Tab = createBottomTabNavigator();
-function Brand() { return <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}><Geometry /><Type variant="label">ISMO / PM</Type></View>; }
+function Brand() { return <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}><Geometry /><Type variant="label">Workframe</Type></View>; }
 function Tabs() {
   const { colors } = useTheme();
   return <Tab.Navigator screenOptions={({ route }) => ({

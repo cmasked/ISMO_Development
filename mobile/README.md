@@ -1,4 +1,4 @@
-# ISMO Android application
+# Workframe Android application
 
 React Native with Expo SDK 54, React 19.1 and React Native 0.81. Android uses the existing NestJS API and PostgreSQL database. No new backend, mock API, local project/task database or invented fields are introduced.
 

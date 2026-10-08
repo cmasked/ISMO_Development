@@ -12,7 +12,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [showPassword, setShowPassword] = useState(false);
-  useEffect(() => { setError(null); setShowPassword(false); document.title = (register ? 'Create an account' : 'Sign in') + ' — ISMO'; }, [register]);
+  useEffect(() => { setError(null); setShowPassword(false); document.title = (register ? 'Create an account' : 'Sign in') + ' — Workframe'; }, [register]);
   if (auth.session) return <Navigate to="/dashboard" replace />;
   const state = location.state as { from?: string; registered?: boolean; email?: string } | null;
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -44,7 +44,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
       }
     } catch (error) { setError(error); } finally { setBusy(false); }
   }
-  return <div className="auth-page"><header className="auth-header"><Link className="brand" to="/login"><Geometry /><span>ISMO <b>/</b> PM</span></Link><ThemeToggle /></header>
+  return <div className="auth-page"><header className="auth-header"><Link className="brand" to="/login"><Geometry /><span>Workframe</span></Link><ThemeToggle /></header>
     <main className="auth-layout"><section className="auth-story"><span className="eyebrow">A little structure. A lot of possibility.</span><div className="auth-title">Good work.<br />Taking shape.</div><p>Bring your projects and tasks together. Know what’s next, and keep things moving.</p><div className="auth-art" aria-hidden="true"><i /><i /><i /><div /></div><span className="auth-caption">Your ideas, with a plan.</span></section>
     <section className="auth-card"><Geometry /><h1>{register ? 'Create your account' : 'Welcome back'}</h1><p>{register ? 'Start organizing your projects in one place.' : 'Sign in to pick up where you left off.'}</p>
       {state?.registered && !register && <p className="success-notice" role="status">Your account is ready. Sign in to get started.</p>}
@@ -59,6 +59,6 @@ export function AuthPage({ register = false }: { register?: boolean }) {
         {!!error && <InlineError error={error} />}
         <button className="button primary auth-submit" disabled={busy} type="submit">{busy ? (register ? 'Creating your account…' : 'Signing in…') : (register ? 'Create account' : 'Sign in')}<ArrowRight size={18} /></button>
       </form>
-      <p className="auth-switch">{register ? 'Already have an account?' : 'New to ISMO?'} <Link to={register ? '/login' : '/register'}>{register ? 'Sign in' : 'Create an account'}</Link></p>
+      <p className="auth-switch">{register ? 'Already have an account?' : 'New to Workframe?'} <Link to={register ? '/login' : '/register'}>{register ? 'Sign in' : 'Create an account'}</Link></p>
     </section></main></div>;
 }
