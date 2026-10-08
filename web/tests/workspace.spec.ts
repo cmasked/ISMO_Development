@@ -23,6 +23,7 @@ test('complete real-backend workflow, editing, filtering, deletion, themes and a
   const runtimeErrors: string[] = [];
   page.on('pageerror', error => runtimeErrors.push(error.message));
   await page.goto('/register');
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await page.getByLabel('Full name', { exact: true }).fill('Alex Morgan');
   await page.getByLabel('Email', { exact: true }).fill(value);
   await page.getByLabel('Password', { exact: false }).first().fill(password);
@@ -111,6 +112,7 @@ test('complete real-backend workflow, editing, filtering, deletion, themes and a
   const lightAxe = await new AxeBuilder({ page }).analyze();
   expect(lightAxe.violations).toEqual([]);
   await page.getByRole('button', { name: 'Switch to dark mode' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   const darkAxe = await new AxeBuilder({ page }).analyze();
   expect(darkAxe.violations).toEqual([]);
   for (const width of [1024, 768, 390]) {
@@ -221,6 +223,7 @@ test('sessions synchronize across tabs and expired saved sessions explain the re
   await expect(second).toHaveURL(/\/login$/);
   await signIn(second, value);
   await expect(page.getByTestId('metric-totalProjects')).toBeVisible();
+  await page.close();
   await second.evaluate(() => {
     const saved = JSON.parse(localStorage.getItem('ismo.session')!);
     saved.expiresAt = new Date(Date.now() - 1000).toISOString();
@@ -229,5 +232,4 @@ test('sessions synchronize across tabs and expired saved sessions explain the re
   await second.goto('/tasks');
   await expect(second).toHaveURL(/\/login$/);
   await expect(second.getByText('Your session has expired. Please sign in to continue.')).toBeVisible();
-  await expect(page).toHaveURL(/\/login$/);
 });

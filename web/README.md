@@ -38,7 +38,7 @@ Serve dist/ as static files. Configure the web host to send browser routes such 
     npx playwright install chromium
     npm test
 
-Playwright needs the migrated PostgreSQL database and backend dependencies/build. Its configuration starts the compiled backend and web preview (or reuses existing servers locally). Supply the documented backend environment variables when invoking tests. Use an isolated test database: the suite creates test accounts and records and intentionally exercises destructive deletion on those records. Do not target production data.
+Playwright needs the migrated PostgreSQL database and backend dependencies/build. Its configuration starts the compiled backend and web preview (or reuses existing servers locally). Supply the documented backend environment variables when invoking tests. The test backend must listen on port 3001 and the web preview uses port 3000. Use an isolated test database: the suite creates test accounts and records and intentionally exercises destructive deletion on those records. Do not target production data.
 
 The GitHub Actions workflow supplies ephemeral PostgreSQL and a randomly generated test signing key. It verifies registration/login/logout, persistence, real dashboard counts, project/task CRUD and relationships, filters, task movement, cascading deletion, network retry, invalid/expired sessions, keyboard dialog behavior, themes, accessibility and responsive overflow. Screenshots and the browser report are retained as workflow artifacts.
 

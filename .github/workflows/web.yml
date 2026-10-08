@@ -54,17 +54,10 @@ jobs:
           npm run migration:run:prod
       - name: Install web
         working-directory: web
-        run: |
-          if [ -f package-lock.json ]; then npm ci; else npm install; fi
-      - name: Inspect frontend dependency advisories
+        run: npm ci
+      - name: Audit web dependencies
         working-directory: web
-        run: |
-          npm audit --json > "$RUNNER_TEMP/web-audit.json" || true
-          node -e "console.log('WEB_AUDIT=' + JSON.stringify(require(process.env.RUNNER_TEMP + '/web-audit.json')))"
-          npm audit --audit-level=low
-      - name: Capture initial dependency lock
-        working-directory: web
-        run: node -e "console.log('WEB_LOCKFILE=' + JSON.stringify(require('./package-lock.json')))"
+        run: npm audit --audit-level=low
       - name: Lint web
         timeout-minutes: 2
         working-directory: web
