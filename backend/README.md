@@ -62,7 +62,7 @@ npm run migration:run:prod
 
 The initial migration creates users, auth_sessions, projects and tasks. Add future versioned migrations under `src/database/migrations/`; do not edit migrations after deployment. `synchronize` and `migrationsRun` are always false. The integration suite verifies migration rollback/reapplication, repeat runs and agreement between entities and migrated schema. Reverting the initial migration destroys its schema/data; tests do this only in their own disposable database.
 
-Development: `npm run start:dev`. Build/typecheck: `npm run build` and `npm run typecheck`. Production: `npm run start:prod`. Verification: `npm test` and `npm run test:integration` (the complete-flow suite needs a local role allowed to create test databases).
+Development: `npm run start:dev`. Build/typecheck: `npm run build` and `npm run typecheck`. Production: `npm run start:prod` applies pending compiled migrations before starting NestJS (the Docker startup command does the same). Verification: `npm test` and `npm run test:integration` (the complete-flow suite needs a local role allowed to create test databases).
 
 ## Logging and startup failures
 
@@ -74,4 +74,4 @@ Startup errors deliberately use a generic message because driver exceptions can 
 
 `CORS_ORIGINS` contains exact web origins. Allowed browser origins receive CORS response headers; unlisted origins do not. Native requests without an Origin header reach the API normally. CORS does not replace authentication/authorization. Cookie credentials are disabled; clients use Authorization bearer tokens.
 
-The server listens on `0.0.0.0` for container/mobile compatibility. Compose exposes its host port only on loopback; choose an explicit network/deployment configuration when connecting a physical mobile device in a later stage.
+The server listens on `0.0.0.0` for container/mobile compatibility. Compose exposes its host port only on loopback; the Android production app connects to the deployed HTTPS API. See `mobile/README.md` for physical-device and emulator setup.

@@ -204,3 +204,4 @@ Use isolated test databases. The browser and native suites create synthetic acco
 - Lists do not yet paginate. Offline editing, password reset, refresh tokens and team management are outside the implemented assignment scope.
 - Render's free tier can delay the first request after inactivity. Both clients show connection/timeout feedback and offer retry.
 - Dependency audit findings and verification limits are recorded in the final review; do not treat a successful build as proof of a clean security audit.
+- A five-minute screen recording is a required submission attachment. Follow [the recording and submission checklist](docs/submission.md).
