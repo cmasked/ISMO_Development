@@ -1,0 +1,37 @@
+name: Android application
+on:
+  pull_request:
+    paths: ['mobile/**', '.github/workflows/android.yml']
+  workflow_dispatch:
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Android dependencies
+        working-directory: mobile
+        run: npm install
+      - name: Check Expo compatibility
+        working-directory: mobile
+        run: npx expo install --check
+      - name: Capture dependency lock
+        if: always()
+        working-directory: mobile
+        run: node -e "const fs = require('fs'); if (fs.existsSync('package-lock.json')) console.log('MOBILE_LOCKFILE=' + JSON.stringify(JSON.parse(fs.readFileSync('package-lock.json', 'utf8'))));"
+      - name: Dependency audit
+        working-directory: mobile
+        run: npm audit --json > audit.json || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-dependency-audit
+          path: mobile/audit.json
