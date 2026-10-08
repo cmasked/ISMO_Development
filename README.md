@@ -1,4 +1,4 @@
-# ISMO Project Management System
+# Workframe
 
 One NestJS backend serves the web application and the future Android application. The assignment PDF defines the features; Travel-Backend guides the NestJS folder structure and coding conventions.
 

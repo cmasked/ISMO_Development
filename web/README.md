@@ -1,4 +1,4 @@
-# ISMO web application
+# Workframe web application
 
 React + TypeScript + Vite frontend for the existing NestJS backend. The web app uses real /api data for authentication, projects, tasks and dashboard counts. It preserves the supplied Stitch Bauhaus palette, typography, fixed sidebar, geometric decorations, project cards, task rows and detail layout. Unsupported demo features and data are excluded.
 
