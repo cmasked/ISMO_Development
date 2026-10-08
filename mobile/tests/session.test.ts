@@ -52,3 +52,21 @@ test('date and UTF-8 validation handle leap years, timezones and non-ASCII passw
   assert.equal(utf8Length('🔷'.repeat(19)), 76); assert.match(passwordError('🔷'.repeat(19), '🔷'.repeat(19)), /too long/);
   assert.match(passwordError('12345678', '12345679'), /don’t match/);
 });
+
+test('expiry waits for pending secure writes before erasing saved authentication', async () => {
+  const disk = storage(); let release!: () => void; let started!: () => void;
+  const writing = new Promise<void>(done => { started = done; });
+  const gate = new Promise<void>(done => { release = done; });
+  let count = 0;
+  const controller = new SessionController({
+    me: async () => session().user, login: async () => session(String(++count)), logout: async () => ({})
+  }, { ...disk, set: async value => {
+    if (JSON.parse(value).accessToken === '2') { started(); await gate; }
+    await disk.set(value);
+  } });
+  await controller.login('a', 'password');
+  const login = controller.login('b', 'password'); await writing;
+  const expiry = controller.expire('1'); release();
+  await Promise.all([login, expiry]);
+  assert.equal(controller.current(), null); assert.equal(await disk.get(), null);
+});

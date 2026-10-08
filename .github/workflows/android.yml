@@ -54,8 +54,11 @@ jobs:
         working-directory: mobile
         run: |
           npm install
-          npm audit fix || true
           npx expo install --check
+      - name: Review available tooling updates
+        working-directory: mobile
+        run: |
+          node -e "(async () => { for (const name of ['braces', 'image-size', 'node-forge', 'postcss', 'sprintf-js']) { const response = await fetch('https://registry.npmjs.org/' + name); const data = await response.json(); console.log('REGISTRY_VERSION=' + JSON.stringify({name, latest:data['dist-tags'].latest, versions:Object.keys(data.versions).slice(-12)})); } })();"
       - name: Capture dependency review
         if: always()
         working-directory: mobile

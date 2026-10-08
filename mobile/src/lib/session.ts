@@ -72,7 +72,7 @@ export class SessionController {
     ++this.epoch;
     this.session = null;
     this.publish({ status: 'signedOut', session: null, notice: expired ? 'Your session has expired. Please sign in to continue.' : '' });
-    try { await this.storage.remove(); }
+    try { await this.write(() => this.storage.remove()); }
     catch { this.publish({ status: 'signedOut', session: null, notice: 'You’re signed out, but we couldn’t clear saved sign-in on this device.' }); }
   }
 }
