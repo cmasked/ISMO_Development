@@ -11,3 +11,14 @@ coverage/
 # Browser verification output
 web/playwright-report/
 web/test-results/
+
+# Generated native projects, credentials and verification output
+mobile/.expo/
+mobile/android/
+mobile/ios/
+mobile/assets/icon.png
+mobile/native-results/
+*.apk
+*.aab
+*.jks
+*.keystore

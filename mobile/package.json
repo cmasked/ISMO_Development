@@ -15,7 +15,7 @@
     "test:integration": "tsx --test tests/backend.integration.ts",
     "export": "expo export --platform android",
     "prebuild:android": "expo prebuild --platform android --no-install",
-    "postinstall": "node scripts/icon.cjs"
+    "postinstall": "node scripts/icon.cjs && node scripts/metro-image-size.cjs"
   },
   "dependencies": {
     "expo": "~54.0.0",
@@ -46,5 +46,13 @@
     "eslint": "9.39.5",
     "eslint-config-expo": "~10.0.0",
     "tsx": "^4.20.5"
+  },
+  "overrides": {
+    "braces": "^3.0.4",
+    "image-size": "^2.0.3",
+    "node-forge": "^1.4.1",
+    "postcss": "^8.5.23",
+    "sprintf-js": "^1.1.4",
+    "uuid": "11.1.1"
   }
 }

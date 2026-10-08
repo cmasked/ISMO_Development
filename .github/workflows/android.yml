@@ -48,10 +48,12 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
       - name: Prepare native dependencies
         working-directory: mobile
         run: |
-          npm ci
+          npm install
           npm audit fix || true
           npx expo install --check
       - name: Capture dependency review
@@ -84,6 +86,14 @@ jobs:
           cd ../mobile
           node scripts/wait-for-url.cjs http://127.0.0.1:3001/api/health
           npm run test:integration
+      - name: Prepare web browser for cross-platform verification
+        run: |
+          cd web
+          npm ci
+          npx playwright install --with-deps chromium
+          npm run dev > /tmp/ismo-web.log 2>&1 &
+          cd ../mobile
+          node scripts/wait-for-url.cjs http://127.0.0.1:3000
       - name: Generate Android project and debug APK
         working-directory: mobile
         run: |
@@ -110,6 +120,13 @@ jobs:
             adb reverse tcp:8081 tcp:8081
             adb install mobile/android/app/build/outputs/apk/debug/app-debug.apk
             maestro test --env TEST_EMAIL=android-ui-${{ github.run_id }}@example.test --test-output-dir mobile/native-results --debug-output mobile/native-results mobile/.maestro/core-flow.yaml
+            TEST_EMAIL=android-ui-${{ github.run_id }}@example.test node mobile/scripts/cross-platform.cjs after-native
+            maestro test --test-output-dir mobile/native-results --debug-output mobile/native-results mobile/.maestro/sync-flow.yaml
+            TEST_EMAIL=android-ui-${{ github.run_id }}@example.test node mobile/scripts/cross-platform.cjs after-sync
+            maestro test --test-output-dir mobile/native-results --debug-output mobile/native-results mobile/.maestro/logout-flow.yaml
+      - name: Capture native review images
+        if: always()
+        run: node mobile/scripts/review-images.cjs
       - name: Save native verification report
         if: always()
         uses: actions/upload-artifact@v4
@@ -120,6 +137,7 @@ jobs:
             mobile/audit.json
             /tmp/ismo-metro.log
             /tmp/ismo-api.log
+            /tmp/ismo-web.log
           retention-days: 7
   apk:
     runs-on: ubuntu-latest
@@ -141,11 +159,14 @@ jobs:
       - name: Install and generate Android project
         working-directory: mobile
         run: |
-          npm ci
+          npm install
           npm run prebuild:android
       - name: Build installable APK
         working-directory: mobile/android
         run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64 --max-workers=2
+      - name: Check deployed backend health
+        continue-on-error: true
+        run: node -e "(async () => { const response = await fetch('https://ismo-development.onrender.com/api/health', {signal: AbortSignal.timeout(90000)}); const value = await response.json(); console.log('DEPLOYED_HEALTH=' + JSON.stringify(value)); if (!response.ok || value.data?.status !== 'ok' || value.data?.database !== 'up') process.exit(1); })().catch(() => { console.error('Deployed backend health could not be verified.'); process.exit(1); });"
       - name: Save installable APK
         uses: actions/upload-artifact@v4
         with:

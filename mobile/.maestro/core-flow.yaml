@@ -87,9 +87,10 @@ appId: com.ismo.projects.e2e
     direction: DOWN
 - tapOn:
     id: "save-task"
-- extendedWaitUntil:
-    visible: "Review Android launch"
-    timeout: 30000
+- scrollUntilVisible:
+    element:
+      text: "Review Android launch"
+    direction: DOWN
 - scrollUntilVisible:
     element:
       text: "Edit task"
@@ -143,19 +144,3 @@ appId: com.ismo.projects.e2e
     direction: DOWN
 - assertVisible: "Review launch content"
 - takeScreenshot: "tasks-dark"
-- tapOn:
-    id: "tab-account"
-- scrollUntilVisible:
-    element:
-      text: "Sign out"
-    direction: DOWN
-- tapOn: "Sign out"
-- tapOn: "(?i)sign out"
-- extendedWaitUntil:
-    visible: "Welcome back"
-    timeout: 30000
-- stopApp
-- launchApp
-- extendedWaitUntil:
-    visible: "Welcome back"
-    timeout: 30000

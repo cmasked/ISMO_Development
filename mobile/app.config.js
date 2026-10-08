@@ -1,7 +1,8 @@
 const apiUrl = process.env.EXPO_PUBLIC_API_BASE_URL || 'https://ismo-development.onrender.com/api';
 const e2e = process.env.ISMO_E2E === 'true' && process.env.CI === 'true';
 const url = new URL(apiUrl);
-if ((!e2e && url.protocol !== 'https:') || (e2e && !['https:', 'http:'].includes(url.protocol)) || url.username || url.password || url.pathname.replace(/\/$/, '') !== '/api') {
+const developmentHost = /^(localhost$|127\.|0\.|10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|\[::1\]$)/.test(url.hostname) || url.hostname.endsWith('.local');
+if ((!e2e && (url.protocol !== 'https:' || developmentHost)) || (e2e && !['https:', 'http:'].includes(url.protocol)) || url.username || url.password || url.pathname.replace(/\/$/, '') !== '/api') {
   throw new Error('Configure a public HTTPS API URL ending in /api.');
 }
 module.exports = {

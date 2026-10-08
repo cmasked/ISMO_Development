@@ -6,5 +6,5 @@ import { Badge, Button, Card, Type } from '../components/ui';
 import { formatDate } from '../lib/validation';
 export function ProjectCard({ project }: { project: Project }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParams>>();
-  return <Card><Badge value={project.status} /><Type variant="heading">{project.name}</Type><Type muted>{project.description || 'No description added.'}</Type><View style={{ gap: 5 }}><Type variant="small" muted>Start: {formatDate(project.startDate)}</Type><Type variant="small" muted>End: {formatDate(project.endDate)}</Type></View><Button testID={'open-project-' + project.id} label="Open project" onPress={() => navigation.navigate('ProjectDetails', { id: project.id })} /></Card>;
+  return <Card><Badge value={project.status} /><Type variant="heading">{project.name}</Type><Type muted numberOfLines={3}>{project.description || 'No description added.'}</Type><View style={{ gap: 5 }}><Type variant="small" muted>Start: {formatDate(project.startDate)}</Type><Type variant="small" muted>End: {formatDate(project.endDate)}</Type></View><Button testID={'open-project-' + project.id} label="Open project" onPress={() => navigation.navigate('ProjectDetails', { id: project.id })} /></Card>;
 }
