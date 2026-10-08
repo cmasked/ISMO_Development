@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { Children, cloneElement, isValidElement, useEffect, useId, useRef, type ReactNode } from 'react';
 import { AlertCircle, ArrowRight, Plus, X } from 'lucide-react';
 import { labels } from '../types';
 import { errorMessage } from '../lib/api';
@@ -35,14 +35,25 @@ export function Modal({ title, children, onClose, busy = false }: { title: strin
     const dialog = ref.current;
     const previous = document.activeElement as HTMLElement | null;
     dialog?.showModal();
+    dialog?.querySelector<HTMLElement>('input:not([type="hidden"]), textarea, select')?.focus();
     return () => { dialog?.close(); previous?.focus(); };
   }, []);
   return <dialog ref={ref} className="modal" aria-labelledby={titleId} onCancel={event => {
     event.preventDefault(); if (!busy) closeRef.current();
   }}><div className="modal-heading"><h2 id={titleId}>{title}</h2><button className="icon-button" aria-label="Close dialog" onClick={onClose} disabled={busy}><X size={20} /></button></div>{children}</dialog>;
 }
+function labelControl(children: ReactNode, id: string, hintId?: string): ReactNode {
+  return Children.map(children, child => {
+    if (!isValidElement<{ id?: string; children?: ReactNode; 'aria-describedby'?: string }>(child)) return child;
+    if (typeof child.type === 'string' && ['input', 'textarea', 'select'].includes(child.type)) {
+      return cloneElement(child, { id, 'aria-describedby': hintId });
+    }
+    return child.props.children ? cloneElement(child, { children: labelControl(child.props.children, id, hintId) }) : child;
+  });
+}
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
-  return <label className="field"><span>{label}</span>{children}{hint && <small>{hint}</small>}</label>;
+  const id = useId();
+  return <div className="field"><label htmlFor={id}>{label}</label>{labelControl(children, id, hint ? id + '-hint' : undefined)}{hint && <small id={id + '-hint'}>{hint}</small>}</div>;
 }
 export function ProgressRing({ completed, total }: { completed: number; total: number }) {
   const percent = total ? Math.round(completed / total * 100) : 0;

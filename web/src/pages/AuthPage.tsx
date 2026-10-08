@@ -24,8 +24,11 @@ export function AuthPage({ register = false }: { register?: boolean }) {
     setError(null);
     if (register) {
       if (password !== data.get('confirmPassword')) { setError(new Error('Your passwords don’t match. Please enter them again.')); return; }
-      if (password.length < 8 || !password.trim() || new TextEncoder().encode(password).length > 72) {
-        setError(new Error('Choose a password with at least 8 characters and no more than 72 bytes.')); return;
+      if (password.length < 8 || !password.trim()) {
+        setError(new Error('Choose a password with at least 8 characters.')); return;
+      }
+      if (new TextEncoder().encode(password).length > 72) {
+        setError(new Error('This password is too long. Please choose a shorter one.')); return;
       }
       if (!String(data.get('fullName')).trim()) { setError(new Error('Please enter your full name.')); return; }
     }

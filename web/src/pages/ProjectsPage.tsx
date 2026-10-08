@@ -21,7 +21,7 @@ export function ProjectsPage() {
     <PageHeading title="Projects" description="A home for everything you’re working on."><CreateButton onClick={() => setEditor('create')}>Create a project</CreateButton></PageHeading>
     <div className="project-filters"><div className="filter-pills" role="group" aria-label="Filter projects by status">
       {['', ...projectStatuses].map(value => <button key={value} className={status === value ? 'selected' : ''} aria-pressed={status === value} onClick={() => setStatus(value)}>{value ? labels[value as keyof typeof labels] : 'All projects'}{all.data && <span>{value ? all.data.filter(project => project.status === value).length : all.data.length}</span>}</button>)}
-    </div><label className="search-field"><span>Search projects</span><input type="search" placeholder="Search by project name" value={search} onChange={event => setSearch(event.target.value)} /></label></div>
+    </div><label className="search-field"><span>Search projects</span><input aria-label="Search projects" type="search" placeholder="Search by project name" value={search} onChange={event => setSearch(event.target.value)} /></label></div>
     {all.isError && filtered && <p className="helper">Project totals are unavailable. <button className="text-button" onClick={() => void all.refetch()}>Try again</button></p>}
     {tasks.isError && <p className="helper">Task completion summaries are unavailable. <button className="text-button" onClick={() => void tasks.refetch()}>Try again</button></p>}
     {projects.isPending ? <Loading label="Loading projects…" cards={6} /> : projects.isError ? <ErrorState message={errorMessage(projects.error)} retry={() => void projects.refetch()} /> : projects.data.length ? <>
