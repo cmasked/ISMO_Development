@@ -51,8 +51,8 @@ Review the recording before submission; make sure text is readable and no passwo
 
 ## Optional bonuses
 
-Included: Docker support, unit tests, integration tests and CI.
+Included: Docker support, unit tests, integration tests, CI, client-side pagination and sorting controls.
 
-Not included: pagination, sorting controls, persistent audit logs, role-based access control, refresh tokens, due-tomorrow push notifications, persisted offline task viewing, or a shared web/mobile types package. These are optional in the assignment. These additions are deferred to keep the submission focused on the required functionality.
+Not included: persistent audit logs, role-based access control, refresh tokens, due-tomorrow push notifications, persisted offline task viewing, or a shared web/mobile types package. These are optional in the assignment. These additions are deferred to keep the submission focused on the required functionality.
 
 Android can retain in-memory data while the app remains open, but this does not constitute persisted offline task viewing. Generic operation logs are not a persistent user-facing audit trail. Ownership checks are not an additional Admin/Member role system.

@@ -9,7 +9,7 @@ A project and task manager with a responsive web client and an Android app. Both
 - Tasks with descriptions, priorities, statuses, due dates and project relationships.
 - Create, edit and delete projects/tasks; confirm destructive actions and mark tasks completed.
 - Five dashboard counts: total projects, total tasks, completed tasks, pending tasks and projects in progress.
-- Combined task name/status/priority/project filters.
+- Combined task name/status/priority/project filters, sorting controls and paginated project/task lists on both clients.
 - Bauhaus light/dark themes, responsive web layouts and native Android date selection.
 - Refresh shared data across web and Android using the same account.
 
@@ -201,7 +201,8 @@ Use isolated test databases. The browser and native suites create synthetic acco
 
 - The demo APK is intended for sideloading; it is not a Play Store release.
 - Web bearer tokens persist in localStorage; Android tokens use encrypted device storage.
-- Lists do not yet paginate. Offline editing, password reset, refresh tokens and team management are outside the implemented assignment scope.
+- Pagination and sorting operate on API-loaded lists in the clients; the backend list endpoints return all matching records. Server-side pagination would be needed for very large accounts.
+- Offline editing, password reset, refresh tokens and team management are outside the implemented assignment scope.
 - Render's free tier can delay the first request after inactivity. Both clients show connection/timeout feedback and offer retry.
 - Dependency audit findings and verification limits are recorded in the final review; do not treat a successful build as proof of a clean security audit.
 - A five-minute screen recording is a required submission attachment. Follow [the recording and submission checklist](docs/submission.md).

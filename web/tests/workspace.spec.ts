@@ -206,6 +206,8 @@ test('keyboard dialogs, project movement, cascade deletion and scheduled session
   await expect(page.locator('.task-main>strong')).toHaveText('Move this task');
   await page.getByRole('button', { name: 'Delete project', exact: true }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Delete project', exact: true }).click();
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  await expect(page).toHaveURL(/\/projects$/);
   const remaining = await request.get('http://127.0.0.1:3001/api/tasks', { headers });
   expect((await remaining.json()).data).toEqual([]);
   await page.evaluate(() => {
@@ -238,4 +240,43 @@ test('sessions synchronize across tabs and expired saved sessions explain the re
   await second.goto('/tasks');
   await expect(second).toHaveURL(/\/login$/);
   await expect(second.getByText('Your session has expired. Please sign in to continue.')).toBeVisible();
+});
+
+test('project and task pagination, sorting and filters use real owned data', async ({ page, request }) => {
+  const account = await register(request);
+  await signIn(page, account);
+  const token = await page.evaluate(() => JSON.parse(localStorage.getItem('ismo.session')!).accessToken as string);
+  const headers = { Authorization: 'Bearer ' + token };
+  const projects: { id: string }[] = [];
+  for (let i = 1; i <= 13; i++) {
+    const response = await request.post('http://127.0.0.1:3001/api/projects', { headers, data: { name: 'Project ' + String(i).padStart(2, '0') } });
+    expect(response.status()).toBe(201); projects.push((await response.json()).data);
+  }
+  for (let i = 1; i <= 11; i++) {
+    const response = await request.post('http://127.0.0.1:3001/api/tasks', { headers, data: {
+      projectId: projects[0].id, name: 'Task ' + String(i).padStart(2, '0'), priority: i === 11 ? 'HIGH' : 'LOW', dueDate: i === 1 ? null : '2026-10-' + String(i + 10).padStart(2, '0')
+    } }); expect(response.status()).toBe(201);
+  }
+  await page.goto('/projects');
+  await page.getByLabel('Sort projects').selectOption('name');
+  const projectPages = page.getByRole('navigation', { name: 'Projects pages' });
+  await expect(page.locator('.project-card')).toHaveCount(12);
+  await projectPages.getByRole('button', { name: 'Next', exact: true }).click();
+  await expect(page.locator('.project-card')).toHaveCount(1);
+  await expect(page.getByRole('link', { name: 'Project 13', exact: true })).toBeVisible();
+  await page.getByRole('searchbox', { name: 'Search projects' }).fill('Project 01');
+  await expect(projectPages).toContainText('Page 1 of 1');
+  await expect(page.getByRole('link', { name: 'Project 01', exact: true })).toBeVisible();
+  await page.goto('/tasks');
+  await page.getByLabel('Sort tasks').selectOption('name');
+  const taskPages = page.getByRole('navigation', { name: 'Tasks pages' });
+  await expect(page.locator('.task-row')).toHaveCount(10);
+  await taskPages.getByRole('button', { name: 'Next', exact: true }).click();
+  await expect(page.locator('.task-main>strong')).toHaveText('Task 11');
+  await page.getByLabel('Sort tasks').selectOption('priority');
+  await expect(taskPages).toContainText('Page 1 of 2');
+  await expect(page.locator('.task-main>strong').first()).toHaveText('Task 11');
+  await page.locator('.filter-bar').getByLabel('Priority', { exact: true }).selectOption('HIGH');
+  await expect(page.locator('.task-row')).toHaveCount(1);
+  await expect(taskPages).toContainText('Page 1 of 1');
 });

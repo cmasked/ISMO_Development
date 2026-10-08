@@ -344,3 +344,8 @@ input::placeholder, textarea::placeholder { color: var(--muted); opacity: .85; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+.project-filters { flex-wrap: wrap; }
+.pagination { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 0; font-size: 13px; color: var(--muted); }
+.pagination>div { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.pagination .button { min-width: 90px; }

@@ -88,4 +88,4 @@ The native flow covers registration, login, project/task creation, editing, comp
 
 `src/auth` owns authentication lifecycle; `src/lib` contains the typed API client, secure session controller, query hooks and validation; `src/components` contains themed native controls; `src/navigation` configures stacks/tabs; `src/features` contains reusable project/task views; `src/screens` contains the user flows.
 
-The API contract is preserved. Website branding uses Workframe; no separate backend is introduced. Original assignment uploads were unavailable in the failed execution workspace; scope follows the pasted mobile checklist and inspected API contract.
+The API contract is preserved. Website branding uses Workframe; no separate backend is introduced. The original assignment was supplied in chat and checked against the implementation. Project/task lists support client-side pagination and sorting of API-loaded records; search/filter changes reset to page one. Missing dates sort last.

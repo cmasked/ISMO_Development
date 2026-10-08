@@ -51,4 +51,6 @@ The GitHub Actions workflow supplies ephemeral PostgreSQL and a randomly generat
 - src/pages: dashboard, projects, project details, tasks and auth routes.
 - tests: real-backend browser flows.
 
-The assignment PDF and additional attached notes were unavailable in the failed cloud workspace; functional scope follows the pasted frontend handoff and inspected backend documentation. No backend source has been modified.
+Project/task lists support client-side pagination and sorting after API search/filtering. Dates without a value sort last. Changing filters/sorting resets to the first page, and deletion clamps to an existing page. The backend response contract is preserved.
+
+The original assignment was supplied in chat and checked against the implementation.
