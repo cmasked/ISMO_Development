@@ -1,12 +1,14 @@
 # ISMO Project Management System
 
-One NestJS backend serves the future web and Android applications. The assignment PDF defines the features; Travel-Backend guides the NestJS folder structure and coding conventions.
+One NestJS backend serves the web application and the future Android application. The assignment PDF defines the features; Travel-Backend guides the NestJS folder structure and coding conventions.
 
-## Current scope: Milestone 1 backend and database
+## Current scope: Backend, database and web application
 
 Implemented: PostgreSQL entities/migration, registration/login/logout/current user, bcrypt password hashing, expiring JWT sessions, authentication rate limiting, owned project/task CRUD, combined search/filtering, and owner-scoped dashboard statistics. The Stage 1 infrastructure supplies strict TypeScript, validated configuration, global validation/error handling, CORS and Swagger.
 
-The backend is under `backend/`. Future `web/` and `mobile/` applications will consume the same `/api` endpoints.
+The backend is under `backend/`. The responsive React application is under `web/` and consumes the same `/api` endpoints. It includes light/dark Bauhaus themes, authentication, dashboard counts, projects and tasks. Android remains a future milestone.
+
+See [web/README.md](web/README.md) for frontend setup, production hosting and browser verification. After starting the backend below, run `cd web`, `npm ci`, then `npm run dev` and open http://localhost:3000.
 
 ## Local development
 
@@ -63,4 +65,4 @@ Unit checks verify environment validation, safe error handling, database options
 
 See [backend/README.md](backend/README.md) for conventions, scripts and logging; [environment variables](docs/environment.md), [API contract](docs/api.md), [database schema/ER diagram](docs/database-schema.md), and [Milestone 1 verification](docs/milestone-1-verification.md) document the implementation.
 
-The application never synchronizes schema or runs migrations automatically. Apply migrations explicitly before startup/deployment. Project deletion permanently cascades to its tasks. Descriptions/dates are optional; project status is explicitly managed. Dashboard pending counts include only PENDING tasks. Web, mobile and public deployment remain subsequent milestones.
+The application never synchronizes schema or runs migrations automatically. Apply migrations explicitly before startup/deployment. Project deletion permanently cascades to its tasks. Descriptions/dates are optional; project status is explicitly managed. Dashboard pending counts include only PENDING tasks. Web implementation and browser verification are covered in [web/README.md](web/README.md). Mobile and public deployment remain subsequent milestones.

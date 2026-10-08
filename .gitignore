@@ -7,3 +7,7 @@ coverage/
 !.env.example
 *.log
 .DS_Store
+
+# Browser verification output
+web/playwright-report/
+web/test-results/

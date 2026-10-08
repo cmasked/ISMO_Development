@@ -1,0 +1,91 @@
+name: Web frontend
+on:
+  pull_request:
+    paths: ['web/**', '.github/workflows/web.yml']
+concurrency:
+  group: web-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: web_test
+          POSTGRES_PASSWORD: ephemeral_ci_password
+          POSTGRES_DB: ismo_web_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U web_test -d ismo_web_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_HOST: 127.0.0.1
+      DATABASE_PORT: '5432'
+      DATABASE_USER: web_test
+      DATABASE_PASSWORD: ephemeral_ci_password
+      DATABASE_NAME: ismo_web_test
+      DATABASE_SSL: 'false'
+      CORS_ORIGINS: http://127.0.0.1:3000
+      JWT_ACCESS_TOKEN_TTL_SECONDS: '3600'
+      PORT: '3001'
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            web/package-lock.json
+      - name: Generate ephemeral test signing key
+        run: node -e "const key = require('crypto').randomBytes(48).toString('hex'); console.log('::add-mask::' + key); require('fs').appendFileSync(process.env.GITHUB_ENV, 'JWT_SECRET=' + key + '\n')"
+      - name: Install backend
+        working-directory: backend
+        run: npm ci
+      - name: Build backend and prepare test database
+        working-directory: backend
+        run: |
+          npm run build
+          npm run migration:run:prod
+      - name: Install web
+        working-directory: web
+        run: npm ci
+      - name: Audit web dependencies
+        working-directory: web
+        run: npm audit --audit-level=low
+      - name: Lint web
+        timeout-minutes: 2
+        working-directory: web
+        run: npm run lint
+      - name: Typecheck web
+        timeout-minutes: 2
+        working-directory: web
+        run: npm run typecheck
+      - name: Build web
+        timeout-minutes: 8
+        working-directory: web
+        run: npm run build
+      - name: Install browser
+        working-directory: web
+        run: npx playwright install --with-deps chromium
+      - name: Verify real user flows
+        working-directory: web
+        run: npm test
+      - name: Capture review images
+        if: always()
+        working-directory: web
+        run: node -e "const fs = require('fs'); for (const name of ['dashboard-light', 'project-detail-dark', 'tasks-dark-390']) { const path = 'test-results/screenshots/' + name + '.png'; if (fs.existsSync(path)) console.log('WEB_SCREENSHOT_' + name + '=' + fs.readFileSync(path).toString('base64')); }"
+      - name: Save browser report and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-browser-report
+          path: |
+            web/playwright-report
+            web/test-results
+          retention-days: 7
