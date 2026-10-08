@@ -267,6 +267,13 @@ test('project and task pagination, sorting and filters use real owned data', asy
   await page.getByRole('searchbox', { name: 'Search projects' }).fill('Project 01');
   await expect(projectPages).toContainText('Page 1 of 1');
   await expect(page.getByRole('link', { name: 'Project 01', exact: true })).toBeVisible();
+  await page.getByRole('searchbox', { name: 'Search projects' }).fill('');
+  await expect(projectPages).toContainText('Page 1 of 2');
+  await projectPages.getByRole('button', { name: 'Next', exact: true }).click();
+  await page.getByRole('button', { name: 'Delete Project 13', exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Delete project', exact: true }).click();
+  await expect(projectPages).toContainText('Page 1 of 1');
+  await expect(page.locator('.project-card')).toHaveCount(12);
   await page.goto('/tasks');
   await page.getByLabel('Sort tasks').selectOption('name');
   const taskPages = page.getByRole('navigation', { name: 'Tasks pages' });

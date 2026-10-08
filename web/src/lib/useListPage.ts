@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { pageItems, sortedItems, type ListItem, type SortKey } from './list';
 export function useListPage<T extends ListItem>(items: readonly T[] | undefined, filterKey: string, size: number) {
   const [sort, setSort] = useState<SortKey>('newest');
@@ -6,6 +6,12 @@ export function useListPage<T extends ListItem>(items: readonly T[] | undefined,
   const key = filterKey + ':' + sort;
   const sorted = useMemo(() => sortedItems(items || [], sort), [items, sort]);
   const result = pageItems(sorted, position.key === key ? position.page : 1, size);
+  useEffect(() => {
+    setPosition(current => {
+      const page = current.key === key ? Math.max(1, Math.min(current.page, result.pages)) : 1;
+      return current.key === key && current.page === page ? current : { key, page };
+    });
+  }, [key, result.pages]);
   const setPage = (page: number) => setPosition({ key, page });
   return { ...result, sort, setSort, setPage };
 }
