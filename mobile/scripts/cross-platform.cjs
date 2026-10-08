@@ -12,6 +12,8 @@ const fs = require('fs');
     await page.getByRole('button', { name: 'Sign in', exact: true }).click();
     await expect(page.getByTestId('metric-completedTasks').getByText(process.argv[2] === 'after-native' ? '1' : '2', { exact: true })).toBeVisible();
     await page.locator('.sidebar').getByRole('link', { name: 'Projects', exact: true }).click();
+    await page.waitForURL('**/projects');
+    await page.getByRole('heading', { name: 'Projects', exact: true }).waitFor();
     await page.getByRole('link', { name: 'Android launch', exact: true }).click();
     if (process.argv[2] === 'after-native') {
       await expect(page.getByLabel('Status for Review launch content')).toHaveValue('COMPLETED');

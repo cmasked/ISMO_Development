@@ -53,13 +53,12 @@ jobs:
       - name: Prepare native dependencies
         working-directory: mobile
         run: |
-          npm install
+          npm ci
           npx expo install --check
       - name: Capture dependency review
         if: always()
         working-directory: mobile
         run: |
-          node -e "const fs = require('fs'); if (fs.existsSync('package-lock.json')) console.log('MOBILE_LOCKFILE=' + JSON.stringify(JSON.parse(fs.readFileSync('package-lock.json', 'utf8'))));"
           npm audit --json > audit.json || true
           node -e "const r = require('./audit.json'); console.log('AUDIT_SUMMARY=' + JSON.stringify({metadata:r.metadata,vulnerabilities:r.vulnerabilities}));"
       - name: Lint, types and session checks
@@ -159,7 +158,7 @@ jobs:
       - name: Install and generate Android project
         working-directory: mobile
         run: |
-          npm install
+          npm ci
           npm run prebuild:android
       - name: Build installable APK
         working-directory: mobile/android
