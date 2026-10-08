@@ -1,7 +1,9 @@
 import { AppConfiguration } from './configuration.interface';
 
 /** Validate configuration without including submitted values in error messages. */
-export function validateEnvironment(env: Record<string, unknown>): AppConfiguration {
+export function validateEnvironment(
+  env: Record<string, unknown>,
+): AppConfiguration {
   const invalid = new Set<string>();
 
   const requiredString = (name: string): string => {
@@ -20,7 +22,8 @@ export function validateEnvironment(env: Record<string, unknown>): AppConfigurat
       return fallback;
     }
     const parsed = Number(value);
-    if (!Number.isSafeInteger(parsed) || parsed < 1 || parsed > max) invalid.add(name);
+    if (!Number.isSafeInteger(parsed) || parsed < 1 || parsed > max)
+      invalid.add(name);
     return parsed;
   };
 
@@ -32,16 +35,22 @@ export function validateEnvironment(env: Record<string, unknown>): AppConfigurat
   const ssl = env.DATABASE_SSL ?? 'false';
   if (ssl !== 'true' && ssl !== 'false') invalid.add('DATABASE_SSL');
 
-  const origins = typeof env.CORS_ORIGINS === 'string'
-    ? env.CORS_ORIGINS.split(',').map((origin) => origin.trim()).filter(Boolean)
-    : [];
+  const origins =
+    typeof env.CORS_ORIGINS === 'string'
+      ? env.CORS_ORIGINS.split(',')
+          .map((origin) => origin.trim())
+          .filter(Boolean)
+      : [];
   if (env.CORS_ORIGINS !== undefined && typeof env.CORS_ORIGINS !== 'string') {
     invalid.add('CORS_ORIGINS');
   }
   for (const origin of origins) {
     try {
       const url = new URL(origin);
-      if (!['http:', 'https:'].includes(url.protocol) || url.origin !== origin) {
+      if (
+        !['http:', 'https:'].includes(url.protocol) ||
+        url.origin !== origin
+      ) {
         invalid.add('CORS_ORIGINS');
       }
     } catch {
@@ -49,8 +58,8 @@ export function validateEnvironment(env: Record<string, unknown>): AppConfigurat
     }
   }
 
-  const secret = env.JWT_SECRET === '' ? undefined : env.JWT_SECRET;
-  if (secret !== undefined && (typeof secret !== 'string' || secret.trim().length < 32)) {
+  const secret = env.JWT_SECRET;
+  if (typeof secret !== 'string' || secret.trim().length < 32) {
     invalid.add('JWT_SECRET');
   }
 
@@ -69,13 +78,19 @@ export function validateEnvironment(env: Record<string, unknown>): AppConfigurat
       ssl: ssl === 'true',
     },
     jwt: {
-      secret: typeof secret === 'string' ? secret : undefined,
-      accessTokenTtlSeconds: integer('JWT_ACCESS_TOKEN_TTL_SECONDS', 3600, 86400),
+      secret: typeof secret === 'string' ? secret : '',
+      accessTokenTtlSeconds: integer(
+        'JWT_ACCESS_TOKEN_TTL_SECONDS',
+        3600,
+        86400,
+      ),
     },
   };
 
   if (invalid.size) {
-    throw new Error(`Invalid or missing environment variables: ${[...invalid].join(', ')}`);
+    throw new Error(
+      `Invalid or missing environment variables: ${[...invalid].join(', ')}`,
+    );
   }
   return configuration;
 }

@@ -1,10 +1,10 @@
 # ISMO Project Management System
 
-One NestJS backend will serve the web and Android applications. The assignment PDF defines the features; Travel-Backend guides the NestJS folder structure and coding conventions.
+One NestJS backend serves the future web and Android applications. The assignment PDF defines the features; Travel-Backend guides the NestJS folder structure and coding conventions.
 
-## Current scope: Stage 1 foundation
+## Current scope: Milestone 1 backend and database
 
-Implemented: strict TypeScript, environment validation, PostgreSQL/TypeORM connection, migration CLI, global request validation, response envelopes, safe exception handling, CORS, Swagger, and a real database readiness check. Authentication, user/project/task tables, and dashboard features belong to subsequent stages.
+Implemented: PostgreSQL entities/migration, registration/login/logout/current user, bcrypt password hashing, expiring JWT sessions, authentication rate limiting, owned project/task CRUD, combined search/filtering, and owner-scoped dashboard statistics. The Stage 1 infrastructure supplies strict TypeScript, validated configuration, global validation/error handling, CORS and Swagger.
 
 The backend is under `backend/`. Future `web/` and `mobile/` applications will consume the same `/api` endpoints.
 
@@ -12,7 +12,7 @@ The backend is under `backend/`. Future `web/` and `mobile/` applications will c
 
 Prerequisites: Node.js 22 or 24, npm, and Docker with the Compose plugin (or an existing PostgreSQL 16 database).
 
-1. Copy `backend/.env.example` to `backend/.env` and fill in `DATABASE_USER`, `DATABASE_PASSWORD`, and `DATABASE_NAME`. Choose a local database password; never commit `.env`.
+1. Copy `backend/.env.example` to `backend/.env` and fill in `DATABASE_USER`, `DATABASE_PASSWORD`, `DATABASE_NAME`, and a strong random `JWT_SECRET` (at least 32 characters). Choose private local values; never commit `.env`. Set `CORS_ORIGINS` to the exact future web origin.
 2. From the repository root, start PostgreSQL:
 
    ```sh
@@ -24,20 +24,26 @@ Prerequisites: Node.js 22 or 24, npm, and Docker with the Compose plugin (or an 
    ```sh
    cd backend
    npm ci
+   npm run migration:run
    npm run start:dev
    ```
 
 `DATABASE_HOST=127.0.0.1` connects the host-run application to the Compose database. If another service occupies port 5432 or 3001, select another `DATABASE_PORT` or `PORT` in `.env`.
 
-The default backend port is 3001. `GET /api/health` returns the standard response envelope with `data.status=ok` and `data.database=up` after executing a PostgreSQL query. A failed database check returns HTTP 503. Swagger UI is at `/docs` and OpenAPI JSON at `/docs-json`.
+The default backend port is 3001. `GET /api/health` returns the standard response envelope with `data.status=ok` and `data.database=up` after executing a PostgreSQL query. A failed database check returns HTTP 503. Swagger UI is at `/docs` and OpenAPI JSON at `/docs-json`. Use the login token as `Authorization: Bearer <token>` for protected requests. Production startup uses `npm run build`, explicit migrations, then `npm run start:prod`.
 
 For a containerized backend, run from the repository root:
 
 ```sh
-docker compose --env-file backend/.env up --build -d
+docker compose --env-file backend/.env up -d postgres
+docker compose --env-file backend/.env build backend
+docker compose --env-file backend/.env run --rm backend npm run migration:run:prod
+docker compose --env-file backend/.env up -d backend
 ```
 
 Compose uses `postgres:5432` inside the backend container automatically. Host ports are bound to loopback for local development. Database data persists in the Compose volume. Updating the database credentials in `.env` does not change an already initialized PostgreSQL volume; use matching credentials or a separately configured database.
+
+The application Docker build remains unverified in this cloud environment because the container builder cannot resolve the npm registry. Host-run backend and Compose PostgreSQL operation are verified.
 
 ## Verification
 
@@ -51,10 +57,10 @@ npm run test:integration
 npm run migration:show
 ```
 
-Unit checks verify environment validation, safe error handling, database options, and the shared validation pipe. Integration checks require PostgreSQL and valid `.env` settings with at least one `CORS_ORIGINS` entry. They start a temporary test server, check its real database connection, Swagger, CORS and HTTP validation, then close it. The validation probe controller exists only in the test application.
+Unit checks verify environment validation, safe error handling, database options, and the shared validation pipe. Integration checks require PostgreSQL, valid `.env` settings and at least one `CORS_ORIGINS` entry. They exercise real HTTP/database flows, security, filtering, dashboard counts and migrations. The complete-flow suite creates and removes a randomly named test database, so use a local database role with CREATE DATABASE permission; never run it with production credentials. The validation probe controller exists only in the test application.
 
 ## Architecture
 
-See [backend/README.md](backend/README.md) for the folder conventions, database commands, and logging policy. Environment variables are documented in [docs/environment.md](docs/environment.md).
+See [backend/README.md](backend/README.md) for conventions, scripts and logging; [environment variables](docs/environment.md), [API contract](docs/api.md), [database schema/ER diagram](docs/database-schema.md), and [Milestone 1 verification](docs/milestone-1-verification.md) document the implementation.
 
-No application entities or versioned migrations exist in Stage 1. The application never synchronizes schema or runs migrations automatically. Run future migrations explicitly before deployment.
+The application never synchronizes schema or runs migrations automatically. Apply migrations explicitly before startup/deployment. Project deletion permanently cascades to its tasks. Descriptions/dates are optional; project status is explicitly managed. Dashboard pending counts include only PENDING tasks. Web, mobile and public deployment remain subsequent milestones.

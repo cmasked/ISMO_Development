@@ -8,6 +8,8 @@ export function buildDatabaseOptions(
 ): PostgresConnectionOptions {
   return {
     type: 'postgres',
+    uuidExtension: 'pgcrypto',
+    installExtensions: false,
     host: database.host,
     port: database.port,
     username: database.username,
