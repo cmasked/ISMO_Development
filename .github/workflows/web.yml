@@ -1,0 +1,77 @@
+name: Web frontend
+on:
+  push:
+    branches: [feat/web-frontend]
+  pull_request:
+    paths: ['web/**', '.github/workflows/web.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: web_test
+          POSTGRES_PASSWORD: ephemeral_ci_password
+          POSTGRES_DB: ismo_web_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U web_test -d ismo_web_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_HOST: 127.0.0.1
+      DATABASE_PORT: '5432'
+      DATABASE_USER: web_test
+      DATABASE_PASSWORD: ephemeral_ci_password
+      DATABASE_NAME: ismo_web_test
+      DATABASE_SSL: 'false'
+      CORS_ORIGINS: http://127.0.0.1:3000
+      JWT_ACCESS_TOKEN_TTL_SECONDS: '3600'
+      PORT: '3001'
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Generate ephemeral test signing key
+        run: node -e "require('fs').appendFileSync(process.env.GITHUB_ENV, 'JWT_SECRET=' + require('crypto').randomBytes(48).toString('hex') + '\n')"
+      - name: Install backend
+        working-directory: backend
+        run: npm ci
+      - name: Build backend and prepare test database
+        working-directory: backend
+        run: |
+          npm run build
+          npm run migration:run:prod
+      - name: Install web
+        working-directory: web
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+      - name: Capture initial dependency lock
+        working-directory: web
+        run: node -e "console.log('WEB_LOCKFILE=' + JSON.stringify(require('./package-lock.json')))"
+      - name: Check web
+        working-directory: web
+        run: |
+          npm run lint
+          npm run typecheck
+          npm run build
+      - name: Install browser
+        working-directory: web
+        run: npx playwright install --with-deps chromium
+      - name: Verify real user flows
+        working-directory: web
+        run: npm test
+      - name: Save browser report and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-browser-report
+          path: |
+            web/playwright-report
+            web/test-results
+          retention-days: 7
