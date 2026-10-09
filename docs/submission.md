@@ -1,6 +1,6 @@
 # Assignment and submission checklist
 
-The original assignment was supplied in chat on 8 October 2026. Workframe implements its required authentication, project/task fields and actions, five dashboard counts, search/filtering, React web client, Expo Android client and one shared NestJS/PostgreSQL backend.
+Workframe implements the assignment's required authentication, project/task fields and actions, five dashboard counts, search/filtering, React web client, Expo Android client and one shared NestJS/PostgreSQL backend.
 
 ## Required capabilities
 
@@ -53,6 +53,6 @@ Review the recording before submission; make sure text is readable and no passwo
 
 Included: Docker support, unit tests, integration tests, CI, client-side pagination and sorting controls.
 
-Not included: persistent audit logs, role-based access control, refresh tokens, due-tomorrow push notifications, persisted offline task viewing, or a shared web/mobile types package. These are optional in the assignment. These additions are deferred to keep the submission focused on the required functionality.
+Not included: persistent audit logs, role-based access control, refresh tokens, due-tomorrow push notifications, persisted offline task viewing, or a shared web/mobile types package. These are optional in the assignment.
 
 Android can retain in-memory data while the app remains open, but this does not constitute persisted offline task viewing. Generic operation logs are not a persistent user-facing audit trail. Ownership checks are not an additional Admin/Member role system.

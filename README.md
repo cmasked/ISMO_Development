@@ -22,7 +22,7 @@ Project status is managed explicitly. Completion percentages are calculated from
 | `web/` | React 19, TypeScript, Vite, React Router, TanStack Query, CSS, Playwright |
 | `backend/` | NestJS 10, TypeORM, PostgreSQL 16, JWT/Passport, bcrypt, class-validator, Swagger |
 | `mobile/` | React Native 0.81, Expo SDK 54, React Navigation, TanStack Query, Expo SecureStore |
-| `docs/` | API contract, environment settings, database schema and verification records |
+| `docs/` | API contract, environment settings, database schema and submission guide |
 
 Web and Android send HTTPS requests to the same backend. The backend owns authentication, authorization, validation and database access. Neither client has a separate backend or local source of project/task records.
 
