@@ -1,0 +1,58 @@
+appId: com.ismo.projects.e2e
+---
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Total projects"
+    timeout: 30000
+- tapOn:
+    id: "tab-projects"
+- scrollUntilVisible:
+    element:
+      text: "Open project"
+    direction: DOWN
+- tapOn: "Open project"
+- scrollUntilVisible:
+    element:
+      text: "Delete task"
+    direction: DOWN
+- tapOn: "Delete task"
+- tapOn: "(?i)keep task"
+- tapOn: "Delete task"
+- tapOn: "(?i)delete task"
+- scrollUntilVisible:
+    element:
+      text: "Delete project"
+    direction: UP
+- tapOn: "Delete project"
+- tapOn: "(?i)keep project"
+- scrollUntilVisible:
+    element:
+      text: "Android launch"
+    direction: UP
+- assertVisible: "Android launch"
+- scrollUntilVisible:
+    element:
+      text: "Delete project"
+    direction: DOWN
+- tapOn: "Delete project"
+- tapOn: "(?i)delete project"
+- extendedWaitUntil:
+    visible: "No projects yet"
+    timeout: 30000
+- tapOn:
+    id: "tab-account"
+- scrollUntilVisible:
+    element:
+      text: "Sign out"
+    direction: DOWN
+- tapOn: "Sign out"
+- tapOn: "(?i)sign out"
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 30000
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 30000

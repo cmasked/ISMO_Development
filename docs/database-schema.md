@@ -1,6 +1,6 @@
 # PostgreSQL schema
 
-The initial migration is `1791468000000-InitialSchema.ts`. TypeORM maps camelCase properties to snake_case columns. Synchronization and automatic migration execution are disabled.
+The initial migration is `1791468000000-InitialSchema.ts`. TypeORM maps camelCase properties to snake_case columns. Schema synchronization and TypeORM's migrationsRun setting are disabled. Production start commands explicitly apply pending compiled migrations before starting the server.
 
 ```mermaid
 erDiagram

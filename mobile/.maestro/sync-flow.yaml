@@ -1,0 +1,52 @@
+appId: com.ismo.projects.e2e
+---
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Total projects"
+    timeout: 30000
+- tapOn:
+    id: "tab-tasks"
+- tapOn:
+    id: "search-tasks"
+- inputText: "Created on web"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      text: "Created on web"
+    direction: DOWN
+- scrollUntilVisible:
+    element:
+      text: "Mark completed"
+    direction: DOWN
+- tapOn: "Mark completed"
+- extendedWaitUntil:
+    visible: "Mark pending"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      text: "Edit task"
+    direction: DOWN
+- tapOn: "Edit task"
+- tapOn:
+    id: "task-name"
+- eraseText: 100
+- inputText: "Completed from Android"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "save-task"
+    direction: DOWN
+- tapOn:
+    id: "save-task"
+- scrollUntilVisible:
+    element:
+      text: "Clear filters"
+    direction: UP
+- tapOn: "Clear filters"
+- scrollUntilVisible:
+    element:
+      text: "Completed from Android"
+    direction: DOWN
+- assertVisible: "Completed from Android"
+- takeScreenshot: "cross-platform-android"

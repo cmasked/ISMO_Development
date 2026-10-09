@@ -23,6 +23,6 @@ export function handleServiceError(
       'Data violates a database constraint; refresh and check the submitted values',
     );
   }
-  logger.error(`${method} failed`, error instanceof Error ? error.stack : error);
+  logger.error(`${method} failed`);
   throw new InternalServerErrorException();
 }
