@@ -2,6 +2,7 @@ import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from '../auth/AuthProvider';
 import { useTheme } from '../components/ThemeProvider';
@@ -21,10 +22,16 @@ const Tab = createBottomTabNavigator();
 function Brand() { return <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}><Geometry /><Type variant="label">Workframe</Type></View>; }
 function Tabs() {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
+  const bottomPadding = Math.max(insets.bottom, 8);
   return <Tab.Navigator screenOptions={({ route }) => ({
     headerTitle: () => <Brand />, headerRight: () => <ThemeToggle />,
     headerStyle: { backgroundColor: colors.bg }, headerShadowVisible: false,
-    tabBarStyle: { backgroundColor: colors.soft, borderTopWidth: 2, borderTopColor: colors.border },
+    tabBarStyle: {
+      backgroundColor: colors.soft, borderTopWidth: 2, borderTopColor: colors.border,
+      height: 60 + bottomPadding, paddingBottom: bottomPadding, paddingTop: 6,
+    },
+    tabBarHideOnKeyboard: true,
     tabBarActiveTintColor: colors.link, tabBarInactiveTintColor: colors.muted,
     tabBarButtonTestID: 'tab-' + route.name.toLowerCase(),
     tabBarLabelStyle: { fontFamily: 'SpaceGrotesk', fontSize: 11 },

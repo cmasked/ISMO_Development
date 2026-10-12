@@ -23,7 +23,7 @@ export function Card({ children, style }: { children: ReactNode; style?: StylePr
 export function Screen({ children, refreshing = false, onRefresh }: { children: ReactNode; refreshing?: boolean; onRefresh?: () => void }) {
   const { colors } = useTheme(); const net = useNetInfo(); const insets = useSafeAreaInsets();
   return <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={90}>
-    <ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{ padding: 20, gap: 20, paddingBottom: Math.max(insets.bottom, 20) + 28 }} refreshControl={onRefresh ? <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.text} colors={[colors.blue]} /> : undefined}>
+    <ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{ padding: 20, gap: 20, paddingBottom: Math.max(insets.bottom, 20) + 44 }} refreshControl={onRefresh ? <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.text} colors={[colors.blue]} /> : undefined}>
       {net.isConnected === false && <Card style={{ backgroundColor: colors.raised }}><Type variant="small">You’re offline. Connect to refresh or save changes.</Type></Card>}
       {children}
     </ScrollView>
